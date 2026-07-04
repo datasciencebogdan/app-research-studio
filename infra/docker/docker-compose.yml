@@ -1,0 +1,54 @@
+version: '3.8'
+
+# Android emulator containers with WebRTC streaming
+# GCP_INTEGRATION: update image tag to match desired Android API level
+# Available images: https://github.com/google/android-emulator-container-scripts
+
+services:
+  emulator-1:
+    image: us-docker.pkg.dev/android-emulator-268719/images/30-google-apis-x86-no-metrics:30.1.2
+    environment:
+      - ADBKEY=/root/.android/adbkey
+    ports:
+      - "8080:80"    # Web UI / WebRTC
+      - "8554:8554"  # WebRTC signaling
+      - "5554:5554"  # ADB emulator console
+      - "5555:5555"  # ADB
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
+    volumes:
+      - emulator-1-data:/root/.android
+    restart: unless-stopped
+
+  emulator-2:
+    image: us-docker.pkg.dev/android-emulator-268719/images/30-google-apis-x86-no-metrics:30.1.2
+    environment:
+      - ADBKEY=/root/.android/adbkey
+    ports:
+      - "8081:80"
+      - "8555:8554"
+      - "5556:5554"
+      - "5557:5555"
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
+    volumes:
+      - emulator-2-data:/root/.android
+    restart: unless-stopped
+
+  # Nginx reverse proxy — routes /emulator/1/ and /emulator/2/ to each instance
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - emulator-1
+      - emulator-2
+    restart: unless-stopped
+
+volumes:
+  emulator-1-data:
+  emulator-2-data:

@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# GCP service account keys — never commit
+infra/terraform/sa-key.json
+*.json.key
+sa-key*.json
+
+# Dev logs
+dev.log
+
+# Terraform state and providers
+infra/terraform/.terraform/
+infra/terraform/terraform.tfstate
+infra/terraform/terraform.tfstate.backup
+infra/terraform/*.tfplan
