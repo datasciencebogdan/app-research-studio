@@ -29,15 +29,18 @@ function getAdbPath(): string {
 
 export const ADB = getAdbPath()
 
-// Returns list of connected emulator serials e.g. ["emulator-5554", "emulator-5556"]
+// Returns list of connected device serials.
+// Detects both local AVDs (emulator-5554) and TCP-connected devices (localhost:5555, 10.x.x.x:5555)
+// which is how budtmo/docker-android appears on GCP.
 export function getConnectedEmulators(): string[] {
   try {
     const out = execSync(`"${ADB}" devices`, { encoding: 'utf8', stdio: 'pipe' })
     return out
       .split('\n')
       .slice(1)
-      .filter(line => line.includes('emulator') && line.includes('device'))
+      .filter(line => line.includes('\tdevice'))
       .map(line => line.split('\t')[0].trim())
+      .filter(serial => serial.length > 0)
   } catch {
     return []
   }

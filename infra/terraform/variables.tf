@@ -16,13 +16,13 @@ variable "zone" {
 }
 
 variable "machine_type" {
-  description = "GCP machine type for emulator host (min n1-standard-4 for 1 emulator)"
+  description = "GCP machine type for emulator host (n2-standard-4 = 4 CPU / 16GB RAM, ~$0.19/h)"
   type        = string
-  default     = "n1-standard-8"
+  default     = "n2-standard-4"
 }
 
 variable "emulator_count" {
   description = "Number of Android emulator instances to start"
   type        = number
-  default     = 2
+  default     = 1
 }

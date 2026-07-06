@@ -65,7 +65,7 @@ resource "google_compute_firewall" "emulator_access" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "443", "6080", "8080", "8554", "5554", "5555"]
+    ports    = ["80", "443", "3000", "6080", "8080", "8554", "5554", "5555"]
   }
 
   allow {
